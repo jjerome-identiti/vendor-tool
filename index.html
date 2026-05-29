@@ -130,37 +130,40 @@
   }
   /* ── Mobile ── */
   @media (max-width:640px) {
-    /* Topbar */
-    .topbar > div { padding:.45rem .75rem; min-height:auto; gap:.5rem; flex-wrap:wrap; }
-    .topbar h1 { font-size:1rem; text-align:left; }
-    .topbar > div > div:first-child { width:110px; }
-    .topbar > div > div:first-child img { height:36px; width:auto; }
-    .topbar > div > div:last-child { width:auto; }
-    /* Search inputs stack vertically */
+    /* ── Full page scroll ── */
+    html { height:auto !important; overflow-y:auto !important; }
+    body { height:auto !important; overflow-y:visible !important; display:block !important; padding-top:50px; }
+    header.topbar { position:fixed !important; top:0; left:0; right:0; z-index:500; }
+    #layout-root { display:block !important; height:auto !important; min-height:0 !important; flex:none !important; }
+    .content-area { display:block !important; height:auto !important; overflow:visible !important; }
+    #list-section { display:block !important; height:auto !important; overflow:visible !important; width:100% !important; border-right:none !important; }
+    .list-panel-scroll { display:block !important; overflow-y:visible !important; height:auto !important; min-height:0 !important; flex:none !important; }
+    #layout-root.map-collapsed #map-section { display:none !important; }
+    #load-more-wrap { padding:6px 8px 20px; }
+
+    /* ── Compact banner ── */
+    .topbar > div { padding:.3rem .6rem; min-height:50px; gap:.4rem; flex-wrap:nowrap !important; align-items:center; }
+    .topbar > div > div:first-child { width:auto; flex-shrink:0; }
+    .topbar > div > div:first-child img { height:30px; width:auto; }
+    .topbar h1 { font-size:.82rem !important; text-align:left !important; flex:1 1 auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-.01em; }
+    .topbar > div > div:last-child { width:auto; flex-shrink:0; }
+
+    /* ── Other ── */
     #search-row { flex-direction:column !important; }
-    /* Filters: horizontal scroll instead of wrap */
     #filters-row { flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
     #filters-row::-webkit-scrollbar { height:3px; }
     #filters-row > * { flex-shrink:0; }
     .ms-dropdown.open { z-index:99999 !important; }
-    /* top-controls padding */
     .top-controls { padding:6px 8px 0; gap:5px; }
-    /* Cards */
     .top-controls .card { padding:6px 10px !important; }
-    /* Info bar */
     .info-bar { padding:3px 8px; gap:4px; font-size:10px; }
     #data-stats { display:none !important; }
-    /* Map height on phones */
-    #map-section { height:200px; }
-    /* Prevent iOS font zoom on inputs */
+    #map-section { height:220px; }
+    #map-section #map { position:relative !important; height:100%; }
     input, select, textarea { font-size:16px !important; }
-    /* Larger touch targets for multi-select */
     .ms-trigger { padding:5px 22px 5px 8px; font-size:11px; }
     .ms-item { padding:8px 10px; }
-    /* Autocomplete list max height */
     .autocomplete-list { max-height:180px; }
-    /* Load more button */
-    #load-more-wrap { padding:6px 8px 10px; }
   }
   .pill { display:inline-flex; align-items:center; gap:3px; padding:1px 6px; border-radius:999px; font-size:9px; font-weight:600; }
   .pill-ok { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
