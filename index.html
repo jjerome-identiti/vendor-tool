@@ -139,8 +139,8 @@
     /* Search inputs stack vertically */
     #search-row { flex-direction:column !important; }
     /* Filters: horizontal scroll instead of wrap */
-    #filters-row { flex-wrap:wrap !important; row-gap:4px; }
-    .ms-dropdown { position:fixed !important; z-index:99999 !important; min-width:160px; }
+    #filters-row { flex-wrap:wrap !important; row-gap:6px; }
+    .ms-dropdown.open { z-index:99999 !important; }
     /* top-controls padding */
     .top-controls { padding:6px 8px 0; gap:5px; }
     /* Cards */
@@ -155,8 +155,6 @@
     /* Larger touch targets for multi-select */
     .ms-trigger { padding:5px 22px 5px 8px; font-size:11px; }
     .ms-item { padding:8px 10px; }
-    /* Dropdowns open upward on mobile to avoid going off-screen */
-    .ms-dropdown { top:auto; bottom:calc(100% + 3px); }
     /* Autocomplete list max height */
     .autocomplete-list { max-height:180px; }
     /* Load more button */
@@ -558,6 +556,12 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     dropdown.classList.remove('open');
     trigger.classList.remove('active');
     if (searchInput) { searchInput.value = ''; filterItems(''); }
+    dropdown.style.position = '';
+    dropdown.style.top = '';
+    dropdown.style.left = '';
+    dropdown.style.width = '';
+    dropdown.style.bottom = '';
+    dropdown.style.zIndex = '';
   }
 
   trigger.addEventListener('click', e => {
@@ -567,12 +571,22 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     // On mobile, position the dropdown fixed under the trigger
     if (window.innerWidth <= 640) {
       const r = trigger.getBoundingClientRect();
-      let left = r.left;
-      const w = Math.max(r.width, 180);
-      if (left + w > window.innerWidth - 8) left = window.innerWidth - w - 8;
-      dropdown.style.top  = (r.bottom + 4) + 'px';
-      dropdown.style.left = left + 'px';
-      dropdown.style.width = w + 'px';
+      const w = Math.max(r.width, 200);
+      let left = Math.min(r.left, window.innerWidth - w - 8);
+      left = Math.max(left, 8);
+      dropdown.style.position = 'fixed';
+      dropdown.style.top    = (r.bottom + 4) + 'px';
+      dropdown.style.left   = left + 'px';
+      dropdown.style.width  = w + 'px';
+      dropdown.style.bottom = 'auto';
+      dropdown.style.zIndex = '99999';
+    } else {
+      dropdown.style.position = '';
+      dropdown.style.top = '';
+      dropdown.style.left = '';
+      dropdown.style.width = '';
+      dropdown.style.bottom = '';
+      dropdown.style.zIndex = '';
     }
   });
 
