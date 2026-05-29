@@ -220,7 +220,7 @@
   .ms-trigger { background:var(--bg-3); color:var(--ink); border:1px solid var(--line-2); border-radius:5px; padding:3px 22px 3px 7px; font-size:11px; cursor:pointer; white-space:nowrap; min-width:120px; max-width:180px; overflow:hidden; text-overflow:ellipsis; display:inline-block; position:relative; }
   .ms-trigger::after { content:"▾"; position:absolute; right:6px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:10px; }
   .ms-trigger.active { border-color:#3b82f6; }
-  .ms-dropdown { display:none; position:absolute; top:calc(100% + 3px); left:0; background:var(--bg-2); border:1px solid var(--line-2); border-radius:8px; box-shadow:0 10px 28px rgba(0,0,0,.6); z-index:3000; min-width:180px; max-height:260px; overflow-y:auto; }
+  .ms-dropdown { display:none; position:absolute; top:calc(100% + 3px); left:0; z-index:9999; background:var(--bg-2); border:1px solid var(--line-2); border-radius:8px; box-shadow:0 10px 28px rgba(0,0,0,.6); z-index:3000; min-width:180px; max-height:260px; overflow-y:auto; }
   .ms-dropdown.open { display:block; }
   .ms-item { display:flex; align-items:center; gap:7px; padding:5px 10px; cursor:pointer; font-size:11px; color:var(--ink); border-bottom:1px solid rgba(255,255,255,.04); }
   .ms-item:hover { background:var(--bg-3); }
@@ -532,7 +532,6 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
   const clearBtn = dropdown.querySelector('.ms-clear');
   const searchInput = dropdown.querySelector('.ms-search');
 
-  // Lazy: always query live so dynamically-added items (trade list) are included
   function getBoxes() { return [...dropdown.querySelectorAll('input[type=checkbox]')]; }
   function getValues() { return getBoxes().filter(b => b.checked).map(b => b.value); }
 
@@ -549,8 +548,23 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     });
   }
 
+  // Portal helpers — on mobile, lift dropdown to body to escape overflow:hidden clipping
+  function positionPortal() {
+    const rect = trigger.getBoundingClientRect();
+    const dropW = Math.max(rect.width, 220);
+    let left = rect.left;
+    if (left + dropW > window.innerWidth - 8) left = window.innerWidth - dropW - 8;
+    dropdown.style.cssText = `position:fixed;top:${rect.bottom+4}px;left:${left}px;width:${dropW}px;z-index:99999;`;
+  }
+
   function openDropdown() {
-    document.querySelectorAll('.ms-dropdown.open').forEach(d => { if (d !== dropdown) d.classList.remove('open'); });
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => { if (d !== dropdown) closeAllExcept(d); });
+    if (window.innerWidth <= 640 && dropdown.parentNode !== document.body) {
+      dropdown._origParent = dropdown.parentNode;
+      dropdown._origNext   = dropdown.nextSibling;
+      document.body.appendChild(dropdown);
+      positionPortal();
+    }
     dropdown.classList.add('open');
     trigger.classList.add('active');
     if (searchInput) { searchInput.value = ''; filterItems(''); setTimeout(() => searchInput.focus(), 50); }
@@ -560,6 +574,13 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     dropdown.classList.remove('open');
     trigger.classList.remove('active');
     if (searchInput) { searchInput.value = ''; filterItems(''); }
+    // Restore from portal
+    if (dropdown._origParent) {
+      dropdown.style.cssText = '';
+      if (dropdown._origNext) dropdown._origParent.insertBefore(dropdown, dropdown._origNext);
+      else dropdown._origParent.appendChild(dropdown);
+      dropdown._origParent = null; dropdown._origNext = null;
+    }
   }
 
   trigger.addEventListener('click', e => {
@@ -596,10 +617,21 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
 }
 
 // Close dropdowns on outside click
-document.addEventListener('click', () => {
-  document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+function closeAllExcept(keep) {
+  document.querySelectorAll('.ms-dropdown.open').forEach(d => {
+    if (d === keep) return;
+    d.classList.remove('open');
+    // Restore portal dropdowns
+    if (d._origParent) {
+      d.style.cssText = '';
+      if (d._origNext) d._origParent.insertBefore(d, d._origNext);
+      else d._origParent.appendChild(d);
+      d._origParent = null; d._origNext = null;
+    }
+  });
   document.querySelectorAll('.ms-trigger.active').forEach(t => t.classList.remove('active'));
-});
+}
+document.addEventListener('click', () => closeAllExcept(null));
 
 // ---------- Map ----------
 const map = L.map('map', { zoomControl:true }).setView([39.5,-98.35],4);
