@@ -139,7 +139,9 @@
     /* Search inputs stack vertically */
     #search-row { flex-direction:column !important; }
     /* Filters: horizontal scroll instead of wrap */
-    #filters-row { flex-wrap:wrap !important; row-gap:6px; }
+    #filters-row { flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+    #filters-row::-webkit-scrollbar { height:3px; }
+    #filters-row > * { flex-shrink:0; }
     .ms-dropdown.open { z-index:99999 !important; }
     /* top-controls padding */
     .top-controls { padding:6px 8px 0; gap:5px; }
