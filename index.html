@@ -132,7 +132,7 @@
   @media (max-width:640px) {
     /* ── Full page scroll ── */
     html { height:auto !important; overflow-y:auto !important; }
-    body { height:auto !important; overflow-y:visible !important; display:block !important; padding-top:76px; }
+    body { height:auto !important; overflow-y:visible !important; display:block !important; padding-top:80px; }
     header.topbar { position:fixed !important; top:0; left:0; right:0; z-index:500; }
     /* Keep flex column so order:-1 still works for map-above-list */
     #layout-root { flex:none !important; height:auto !important; min-height:0 !important; }
@@ -145,12 +145,12 @@
     #layout-root.map-collapsed #map-section { display:none !important; flex:none !important; }
     #load-more-wrap { padding:6px 8px 24px; }
 
-    /* ── Compact banner: logo left, title beside it, button below ── */
+    /* ── Compact banner: logo + centered title on row 1, button left on row 2 ── */
     .topbar > div { padding:.25rem .6rem; min-height:auto; gap:.1rem .4rem; flex-wrap:wrap !important; align-items:center; }
-    .topbar > div > div:first-child { width:auto; flex-shrink:0; align-self:center; }
-    .topbar > div > div:first-child img { height:28px; width:auto; }
-    .topbar h1 { flex:1 1 auto; font-size:.88rem !important; text-align:left !important; white-space:normal !important; line-height:1.25; min-width:0; }
-    .topbar > div > div:last-child { flex:0 0 100%; display:flex; justify-content:flex-end; margin-top:0; }
+    .topbar > div > div:first-child { flex:0 0 auto; align-self:center; }
+    .topbar > div > div:first-child img { height:30px; width:auto; }
+    .topbar h1 { flex:1 1 auto; font-size:1rem !important; text-align:center !important; white-space:normal !important; line-height:1.25; min-width:0; }
+    .topbar > div > div:last-child { flex:0 0 100%; display:flex; justify-content:flex-start; padding-left:2px; }
 
     /* ── Other ── */
     #search-row { flex-direction:column !important; }
@@ -1306,6 +1306,20 @@ fetch(APPS_SCRIPT_URL)
     </div>`;
     console.error('Vendor data fetch error:', err);
   });
+
+// ── Mobile: dynamic header height padding ────────────────────────────────────────
+function fixMobilePadding() {
+  if (window.innerWidth <= 640) {
+    const h = document.querySelector('header.topbar');
+    if (h) document.body.style.paddingTop = h.offsetHeight + 'px';
+  } else {
+    document.body.style.paddingTop = '';
+  }
+}
+window.addEventListener('resize', fixMobilePadding);
+// Run after fonts/images settle
+setTimeout(fixMobilePadding, 100);
+setTimeout(fixMobilePadding, 600);
 
 // ── Map collapse toggle ────────────────────────────────────────────────────────
 const mapCollapseBtn = document.getElementById('map-collapse-btn');
