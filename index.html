@@ -139,9 +139,8 @@
     /* Search inputs stack vertically */
     #search-row { flex-direction:column !important; }
     /* Filters: horizontal scroll instead of wrap */
-    #filters-row { flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
-    #filters-row::-webkit-scrollbar { height:3px; }
-    #filters-row > * { flex-shrink:0; }
+    #filters-row { flex-wrap:wrap !important; row-gap:4px; }
+    .ms-dropdown { position:fixed !important; z-index:99999 !important; min-width:160px; }
     /* top-controls padding */
     .top-controls { padding:6px 8px 0; gap:5px; }
     /* Cards */
@@ -548,23 +547,8 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     });
   }
 
-  // Portal helpers — on mobile, lift dropdown to body to escape overflow:hidden clipping
-  function positionPortal() {
-    const rect = trigger.getBoundingClientRect();
-    const dropW = Math.max(rect.width, 220);
-    let left = rect.left;
-    if (left + dropW > window.innerWidth - 8) left = window.innerWidth - dropW - 8;
-    dropdown.style.cssText = `position:fixed;top:${rect.bottom+4}px;left:${left}px;width:${dropW}px;z-index:99999;`;
-  }
-
   function openDropdown() {
-    document.querySelectorAll('.ms-dropdown.open').forEach(d => { if (d !== dropdown) closeAllExcept(d); });
-    if (window.innerWidth <= 640 && dropdown.parentNode !== document.body) {
-      dropdown._origParent = dropdown.parentNode;
-      dropdown._origNext   = dropdown.nextSibling;
-      document.body.appendChild(dropdown);
-      positionPortal();
-    }
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => { if (d !== dropdown) d.classList.remove('open'); });
     dropdown.classList.add('open');
     trigger.classList.add('active');
     if (searchInput) { searchInput.value = ''; filterItems(''); setTimeout(() => searchInput.focus(), 50); }
@@ -574,18 +558,22 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     dropdown.classList.remove('open');
     trigger.classList.remove('active');
     if (searchInput) { searchInput.value = ''; filterItems(''); }
-    // Restore from portal
-    if (dropdown._origParent) {
-      dropdown.style.cssText = '';
-      if (dropdown._origNext) dropdown._origParent.insertBefore(dropdown, dropdown._origNext);
-      else dropdown._origParent.appendChild(dropdown);
-      dropdown._origParent = null; dropdown._origNext = null;
-    }
   }
 
   trigger.addEventListener('click', e => {
     e.stopPropagation();
-    dropdown.classList.contains('open') ? closeDropdown() : openDropdown();
+    if (dropdown.classList.contains('open')) { closeDropdown(); return; }
+    openDropdown();
+    // On mobile, position the dropdown fixed under the trigger
+    if (window.innerWidth <= 640) {
+      const r = trigger.getBoundingClientRect();
+      let left = r.left;
+      const w = Math.max(r.width, 180);
+      if (left + w > window.innerWidth - 8) left = window.innerWidth - w - 8;
+      dropdown.style.top  = (r.bottom + 4) + 'px';
+      dropdown.style.left = left + 'px';
+      dropdown.style.width = w + 'px';
+    }
   });
 
   if (searchInput) {
@@ -617,21 +605,10 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
 }
 
 // Close dropdowns on outside click
-function closeAllExcept(keep) {
-  document.querySelectorAll('.ms-dropdown.open').forEach(d => {
-    if (d === keep) return;
-    d.classList.remove('open');
-    // Restore portal dropdowns
-    if (d._origParent) {
-      d.style.cssText = '';
-      if (d._origNext) d._origParent.insertBefore(d, d._origNext);
-      else d._origParent.appendChild(d);
-      d._origParent = null; d._origNext = null;
-    }
-  });
+document.addEventListener('click', () => {
+  document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.ms-trigger.active').forEach(t => t.classList.remove('active'));
-}
-document.addEventListener('click', () => closeAllExcept(null));
+});
 
 // ---------- Map ----------
 const map = L.map('map', { zoomControl:true }).setView([39.5,-98.35],4);
