@@ -132,21 +132,25 @@
   @media (max-width:640px) {
     /* ── Full page scroll ── */
     html { height:auto !important; overflow-y:auto !important; }
-    body { height:auto !important; overflow-y:visible !important; display:block !important; padding-top:50px; }
+    body { height:auto !important; overflow-y:visible !important; display:block !important; padding-top:76px; }
     header.topbar { position:fixed !important; top:0; left:0; right:0; z-index:500; }
-    #layout-root { display:block !important; height:auto !important; min-height:0 !important; flex:none !important; }
-    .content-area { display:block !important; height:auto !important; overflow:visible !important; }
-    #list-section { display:block !important; height:auto !important; overflow:visible !important; width:100% !important; border-right:none !important; }
-    .list-panel-scroll { display:block !important; overflow-y:visible !important; height:auto !important; min-height:0 !important; flex:none !important; }
-    #layout-root.map-collapsed #map-section { display:none !important; }
-    #load-more-wrap { padding:6px 8px 20px; }
+    /* Keep flex column so order:-1 still works for map-above-list */
+    #layout-root { flex:none !important; height:auto !important; min-height:0 !important; }
+    .content-area { flex-direction:column !important; height:auto !important; overflow:visible !important; }
+    #list-section { flex:none !important; height:auto !important; overflow:visible !important; width:100% !important; border-right:none !important; border-top:1px solid var(--line); }
+    .list-panel-scroll { overflow-y:visible !important; height:auto !important; flex:none !important; min-height:0 !important; }
+    /* Map above list */
+    #map-section { order:-1 !important; height:220px; flex-shrink:0 !important; }
+    #map-section #map { position:relative !important; height:100%; }
+    #layout-root.map-collapsed #map-section { display:none !important; flex:none !important; }
+    #load-more-wrap { padding:6px 8px 24px; }
 
-    /* ── Compact banner ── */
-    .topbar > div { padding:.3rem .6rem; min-height:50px; gap:.4rem; flex-wrap:nowrap !important; align-items:center; }
-    .topbar > div > div:first-child { width:auto; flex-shrink:0; }
-    .topbar > div > div:first-child img { height:30px; width:auto; }
-    .topbar h1 { font-size:.82rem !important; text-align:left !important; flex:1 1 auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-.01em; }
-    .topbar > div > div:last-child { width:auto; flex-shrink:0; }
+    /* ── Compact banner: logo left, title beside it, button below ── */
+    .topbar > div { padding:.25rem .6rem; min-height:auto; gap:.1rem .4rem; flex-wrap:wrap !important; align-items:center; }
+    .topbar > div > div:first-child { width:auto; flex-shrink:0; align-self:center; }
+    .topbar > div > div:first-child img { height:28px; width:auto; }
+    .topbar h1 { flex:1 1 auto; font-size:.88rem !important; text-align:left !important; white-space:normal !important; line-height:1.25; min-width:0; }
+    .topbar > div > div:last-child { flex:0 0 100%; display:flex; justify-content:flex-end; margin-top:0; }
 
     /* ── Other ── */
     #search-row { flex-direction:column !important; }
@@ -158,8 +162,6 @@
     .top-controls .card { padding:6px 10px !important; }
     .info-bar { padding:3px 8px; gap:4px; font-size:10px; }
     #data-stats { display:none !important; }
-    #map-section { height:220px; }
-    #map-section #map { position:relative !important; height:100%; }
     input, select, textarea { font-size:16px !important; }
     .ms-trigger { padding:5px 22px 5px 8px; font-size:11px; }
     .ms-item { padding:8px 10px; }
