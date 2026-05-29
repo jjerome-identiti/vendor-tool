@@ -558,20 +558,26 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
     dropdown.classList.remove('open');
     trigger.classList.remove('active');
     if (searchInput) { searchInput.value = ''; filterItems(''); }
-    dropdown.style.position = '';
-    dropdown.style.top = '';
-    dropdown.style.left = '';
-    dropdown.style.width = '';
-    dropdown.style.bottom = '';
-    dropdown.style.zIndex = '';
+    if (dropdown._portal) {
+      dropdown.style.cssText = '';
+      if (dropdown._portalNext) dropdown._portalParent.insertBefore(dropdown, dropdown._portalNext);
+      else dropdown._portalParent.appendChild(dropdown);
+      dropdown._portal = false;
+    }
   }
 
   trigger.addEventListener('click', e => {
     e.stopPropagation();
     if (dropdown.classList.contains('open')) { closeDropdown(); return; }
     openDropdown();
-    // On mobile, position the dropdown fixed under the trigger
-    if (window.innerWidth <= 640) {
+    // On mobile: move dropdown to body to escape iOS overflow clipping
+    if (window.innerWidth <= 640 && !dropdown._portal) {
+      dropdown._portalParent = dropdown.parentNode;
+      dropdown._portalNext   = dropdown.nextSibling;
+      document.body.appendChild(dropdown);
+      dropdown._portal = true;
+    }
+    if (dropdown._portal) {
       const r = trigger.getBoundingClientRect();
       const w = Math.max(r.width, 200);
       let left = Math.min(r.left, window.innerWidth - w - 8);
@@ -582,13 +588,6 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
       dropdown.style.width  = w + 'px';
       dropdown.style.bottom = 'auto';
       dropdown.style.zIndex = '99999';
-    } else {
-      dropdown.style.position = '';
-      dropdown.style.top = '';
-      dropdown.style.left = '';
-      dropdown.style.width = '';
-      dropdown.style.bottom = '';
-      dropdown.style.zIndex = '';
     }
   });
 
@@ -607,9 +606,9 @@ function setupMultiSelect(wrapperId, triggerId, dropdownId, allLabel, onChange) 
 
   // Single delegated listener on the dropdown — handles both static & dynamic items
   dropdown.addEventListener('click', e => {
+    e.stopPropagation(); // Always block bubbling so document click doesn't close us
     const item = e.target.closest('.ms-item');
     if (!item) return;
-    e.stopPropagation();
     const box = item.querySelector('input[type=checkbox]');
     if (!box) return;
     if (e.target !== box) box.checked = !box.checked;
