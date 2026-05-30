@@ -1557,10 +1557,20 @@ function initApp() {
   // Clean Salesforce address artifacts before geocoding
   function cleanSFAddress(addr) {
     return addr
-      .replace(/\s+#\s+[A-Z]+\b/g, '')   // remove # ROADUNIT, # SUITE, # APT etc.
+      .replace(/#[^,]*/g, '')              // remove # PKWYUNIT # 1, # ROADUNIT, etc. (all # content up to next comma)
       .replace(/\s*\bUS\b\s*$/i, '')      // remove trailing country code
       .replace(/\s*\bUNITED STATES\b\s*$/i, '')
-      .replace(/\s{2,}/g, ' ')              // collapse multiple spaces
+      // Expand common Salesforce city abbreviations
+      .replace(/\bVIRGINIA BCH\b/gi, 'Virginia Beach')
+      .replace(/\bJACKSONVILLE BCH\b/gi, 'Jacksonville Beach')
+      .replace(/\bST\.?\s+/gi, 'Saint ')
+      .replace(/\bFT\.?\s+/gi, 'Fort ')
+      .replace(/\bMT\.?\s+/gi, 'Mount ')
+      // Clean up punctuation artifacts left by removal
+      .replace(/,\s*,/g, ',')             // double commas
+      .replace(/^,\s*/g, '')              // leading comma
+      .replace(/\s+,/g, ',')               // remove spaces before commas
+      .replace(/\s{2,}/g, ' ')             // collapse spaces
       .trim();
   }
 
