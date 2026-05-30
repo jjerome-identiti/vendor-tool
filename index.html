@@ -1038,6 +1038,27 @@ function applyFilters() {
     else if (state.activity==='ever') pool=pool.filter(v=>v.wo.length>0);
     if (state.newVendor==='new') { const now=new Date(); pool=pool.filter(v=>v.vc&&(now-new Date(v.vc))/(864e5)<=180); }
     pool.sort((a,b) => fuzzyScore(state.vendorSearch,b.n) - fuzzyScore(state.vendorSearch,a.n));
+
+    // SA matching for name-search mode
+    const etaD_vns = state.etaDate || new Date().toISOString().slice(0,10);
+    pool = pool.map(v => {
+      if (!v.sa || !v.sa.length) return v;
+      const matches = v.sa.filter(s => {
+        if (s.sd > etaD_vns) return false;
+        const _today_vns = (function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+        s._sameDay = (s.sd === _today_vns);
+        if (!workOrder) { s._saDist = null; s._tradeMatch = !state.trades.length || state.trades.includes(s.tr); return true; }
+        const d = haversineMiles(workOrder.lat, workOrder.lng, s.lat, s.lng);
+        if (d > state.saRadius) return false;
+        s._saDist = d;
+        s._tradeMatch = !state.trades.length || state.trades.includes(s.tr);
+        return true;
+      });
+      if (!matches.length) return v;
+      const locMatch = matches.filter(s => s._saDist!=null && (s._saDist<=0.15||(s._saDist<=0.75&&addrLocationMatch(workOrder&&workOrder._addr||'',s.addr))));
+      return {...v, _saMatches: matches, _saLocationMatch: locMatch.length>0, _saLocMatches: locMatch};
+    });
+
     currentResults=pool; showCount=25; render(); return;
   }
 
