@@ -1476,6 +1476,36 @@ function showDataLoading() {
 }
 
 function initApp() {
+  // Check for URL parameters (auto-fill from Salesforce)
+  const _urlParams = new URLSearchParams(window.location.search);
+  const _urlAddress = _urlParams.get('address') || _urlParams.get('addr');
+  const _urlEta     = _urlParams.get('eta');
+  const _urlTrade   = _urlParams.get('trade');
+
+  if (_urlEta) {
+    const etaInput = document.getElementById('eta-date-input');
+    if (etaInput) { etaInput.value = _urlEta; state.etaDate = _urlEta; }
+  }
+  if (_urlTrade) {
+    // Will be applied after trade list is populated below
+    window._pendingTrade = _urlTrade;
+  }
+  if (_urlAddress) {
+    const addrInput = document.getElementById('address-input');
+    if (addrInput) {
+      addrInput.value = _urlAddress;
+      // Trigger geocode after a short delay so the app is fully ready
+      setTimeout(async () => {
+        const res = await geocodeAny(_urlAddress);
+        if (res.length) {
+          selectAddress(res[0]);
+        } else {
+          addrInput.placeholder = 'Could not geocode address from URL — try manually';
+        }
+      }, 400);
+    }
+  }
+
   // Populate trade list now that VENDORS is loaded
   const tdd = document.getElementById('trade-dropdown');
   const allTrades = [...new Set(VENDORS.flatMap(v=>v.tr))].sort();
@@ -1494,6 +1524,16 @@ function initApp() {
   // Update stats
   document.getElementById('data-stats').innerHTML =
     `<span>${VENDORS.length.toLocaleString()} vendors loaded</span>`;
+
+  // Apply pending trade from URL param
+  if (window._pendingTrade) {
+    const tradeBoxes = document.querySelectorAll('#trade-dropdown input[type=checkbox]');
+    tradeBoxes.forEach(b => { if (b.value === window._pendingTrade) b.checked = true; });
+    state.trades = [window._pendingTrade];
+    const tradeTrigger = document.getElementById('trade-trigger');
+    if (tradeTrigger) tradeTrigger.textContent = window._pendingTrade;
+    window._pendingTrade = null;
+  }
 
   applyFilters();
 }
