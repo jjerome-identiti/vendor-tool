@@ -1574,12 +1574,25 @@ function initApp() {
       .trim();
   }
 
-  if (_urlAddress) {
+  // Handle Salesforce number formatting — trim whitespace, fix locale comma decimals
+  const _parseSFNum = v => parseFloat((v||'').trim().replace(',','.'));
+  const _urlLat = _parseSFNum(_urlParams.get('lat'));
+  const _urlLng = _parseSFNum(_urlParams.get('lng'));
+  const _urlLabel = _urlParams.get('label') || _urlAddress || '';
+
+  if (!isNaN(_urlLat) && !isNaN(_urlLng) && (_urlLat !== 0 || _urlLng !== 0)) {
+    // Lat/lng provided directly — skip geocoding entirely
+    const displayLabel = _urlLabel ? decodeURIComponent(_urlLabel).replace(/\+/g,' ') : _urlLat.toFixed(4)+', '+_urlLng.toFixed(4);
+    const cleanedLabel = cleanSFAddress(displayLabel) || (_urlLat.toFixed(4)+', '+_urlLng.toFixed(4));
+    const addrInputEl = document.getElementById('address-input');
+    if (addrInputEl) addrInputEl.value = cleanedLabel;
+    // Call selectAddress directly — initApp runs after VENDORS loaded so no timing issue
+    selectAddress({ lat: _urlLat, lon: _urlLng, display_name: cleanedLabel });
+  } else if (_urlAddress) {
     const addrInput = document.getElementById('address-input');
     if (addrInput) {
       const _cleanedAddr = cleanSFAddress(_urlAddress);
       addrInput.value = _cleanedAddr;
-      // Trigger geocode after a short delay so the app is fully ready
       setTimeout(async () => {
         const res = await geocodeAny(_cleanedAddr);
         if (res.length) {
