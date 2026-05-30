@@ -524,6 +524,9 @@
 
 <script>
 // ---------- Data ----------
+// ─── URL params — read once at load, applied after data is ready ─────────────
+const _BOOT_PARAMS = new URLSearchParams(window.location.search);
+
 // ─── Live data config ────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMEo3Mm_Nr00u999cI_UpiEXn-2sZxwHsP-UyaM9C2A2E3xBu6UKBFG_-Eaud5PxFl/exec';
 let VENDORS = [];
@@ -1477,7 +1480,7 @@ function showDataLoading() {
 
 function initApp() {
   // Check for URL parameters (auto-fill from Salesforce)
-  const _urlParams = new URLSearchParams(window.location.search);
+  const _urlParams = _BOOT_PARAMS;
   const _urlAddress = _urlParams.get('address') || _urlParams.get('addr');
   const _urlEta     = _urlParams.get('eta');
   const _urlTrade   = _urlParams.get('trade');
