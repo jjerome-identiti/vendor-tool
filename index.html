@@ -1254,19 +1254,35 @@ function render() {
       const _today = (function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
       const extDate = new Date(); extDate.setDate(extDate.getDate()+30);
       const extDateStr = extDate.getFullYear()+'-'+String(extDate.getMonth()+1).padStart(2,'0')+'-'+String(extDate.getDate()).padStart(2,'0');
-      // Search all vendors for nearest SA within 2× radius + 30 days
-      let nearest = null, nearestDist = Infinity;
-      VENDORS.forEach(v => {
-        (v.sa||[]).forEach(s => {
-          if (s.sd < _today || s.sd > extDateStr) return;
-          const d = haversineMiles(workOrder.lat, workOrder.lng, s.lat, s.lng);
-          if (d < nearestDist) { nearestDist=d; nearest={v,s,d}; }
+      // Check if any vendor (regardless of filters) has an SA match in the area
+      const filteredOut = VENDORS.filter(v => {
+        if (!v.sa) return false;
+        return v.sa.some(s => {
+          if (s.sd < _today || s.sd > state.etaDate) return false;
+          return haversineMiles(workOrder.lat, workOrder.lng, s.lat, s.lng) <= state.saRadius;
         });
       });
-      const nearestHtml = nearest
-        ? `<div class="gap-nearest">Nearest upcoming SA: <strong>${nearest.d.toFixed(1)} mi (${estDriveTime(nearest.d)})</strong> on ${nearest.s.sd} — ${escapeHtml(nearest.v.n)} at ${escapeHtml(nearest.s.store)}</div>`
-        : `<div class="gap-nearest">No upcoming service appointments found within 30 days.</div>`;
-      const banner = `<div class="sa-gap-banner"><div class="gap-title">📭 No vendors scheduled in this area within ${state.saRadius} mi before ${state.etaDate}</div>${nearestHtml}</div>`;
+      let banner;
+      if (filteredOut.length > 0) {
+        // SA matches exist but are hidden by active filters
+        const names = filteredOut.slice(0,2).map(v=>escapeHtml(v.n)).join(', ');
+        const more = filteredOut.length > 2 ? ' and '+(filteredOut.length-2)+' more' : '';
+        banner = `<div class="sa-gap-banner"><div class="gap-title">ℹ SA matches exist but are excluded by your current filters</div><div class="gap-nearest">${names}${more} ${filteredOut.length===1?'has':'have'} an upcoming SA in this area — try widening your Trade or Status filters to see them.</div></div>`;
+      } else {
+        // Genuinely no SA nearby — find nearest anywhere
+        let nearest = null, nearestDist = Infinity;
+        VENDORS.forEach(v => {
+          (v.sa||[]).forEach(s => {
+            if (s.sd < _today || s.sd > extDateStr) return;
+            const d = haversineMiles(workOrder.lat, workOrder.lng, s.lat, s.lng);
+            if (d < nearestDist) { nearestDist=d; nearest={v,s,d}; }
+          });
+        });
+        const nearestHtml = nearest
+          ? `<div class="gap-nearest">Nearest upcoming SA: <strong>${nearest.d.toFixed(1)} mi (${estDriveTime(nearest.d)})</strong> on ${nearest.s.sd} — ${escapeHtml(nearest.v.n)} at ${escapeHtml(nearest.s.store)}</div>`
+          : `<div class="gap-nearest">No upcoming service appointments found within 30 days.</div>`;
+        banner = `<div class="sa-gap-banner"><div class="gap-title">📭 No vendors scheduled in this area within ${state.saRadius} mi before ${state.etaDate}</div>${nearestHtml}</div>`;
+      }
       listEl.innerHTML = banner + showing.map((v,i)=>renderCard(v,i+1)).join('');
     } else {
       listEl.innerHTML = showing.map((v,i)=>renderCard(v,i+1)).join('');
