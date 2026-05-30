@@ -281,10 +281,16 @@
     <div style="font-size:2.2rem; margin-bottom:10px;">🔒</div>
     <h2 style="color:#f1f5f9; font-size:1.2rem; font-weight:700; margin:0 0 4px;">Vendor Selection Tool</h2>
     <p style="color:#64748b; font-size:12px; margin:0 0 22px;">KFM 24/7 — Internal Use Only</p>
-    <input id="pw-input" type="password" placeholder="Enter password"
-      style="width:100%; box-sizing:border-box; background:#1c2333; border:1px solid #374151;
-             border-radius:8px; padding:10px 14px; font-size:15px; color:#f1f5f9;
-             outline:none; margin-bottom:10px;" autocomplete="current-password" />
+    <div style="position:relative; margin-bottom:10px;">
+      <input id="pw-input" type="password" placeholder="Enter password"
+        style="width:100%; box-sizing:border-box; background:#1c2333; border:1px solid #374151;
+               border-radius:8px; padding:10px 44px 10px 14px; font-size:15px; color:#f1f5f9;
+               outline:none;" autocomplete="current-password" />
+      <button id="pw-eye" type="button" onclick="(function(){var i=document.getElementById('pw-input'),e=document.getElementById('pw-eye');if(i.type==='password'){i.type='text';e.innerHTML='🙈';}else{i.type='password';e.innerHTML='👁';}})()"
+        style="position:absolute; right:10px; top:50%; transform:translateY(-50%);
+               background:none; border:none; cursor:pointer; font-size:16px; line-height:1;
+               color:#94a3b8; padding:4px;">👁</button>
+    </div>
     <div id="pw-error" style="color:#f87171; font-size:11px; min-height:16px; margin-bottom:8px;"></div>
     <button id="pw-submit"
       style="width:100%; background:linear-gradient(135deg,#3b82f6,#1e40af); color:white;
