@@ -528,7 +528,7 @@
 const _BOOT_PARAMS = new URLSearchParams(window.location.search);
 
 // ─── Live data config ────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMEo3Mm_Nr00u999cI_UpiEXn-2sZxwHsP-UyaM9C2A2E3xBu6UKBFG_-Eaud5PxFl/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhpHm1KVo9j7gaTAPcGrN1zRigzaXQFy8zV3ZpA2OwbMhsO1CcWfi6qZdZDkJnfdTp/exec';
 let VENDORS = [];
 // ─── Password gate ────────────────────────────────────────
 // ─── Password gate ────────────────────────────────────────────────────────
@@ -1639,8 +1639,15 @@ function initApp() {
   if (existingClear) tdd.appendChild(existingClear);
 
   // Update stats
+  const _cacheAge = window._cacheTimestamp ? (() => {
+    const diff = Math.round((Date.now() - new Date(window._cacheTimestamp)) / 60000);
+    if (diff < 2) return 'just now';
+    if (diff < 60) return diff + ' min ago';
+    const h = Math.floor(diff/60), m = diff%60;
+    return m > 0 ? h+'h '+m+'m ago' : h+'h ago';
+  })() : null;
   document.getElementById('data-stats').innerHTML =
-    `<span>${VENDORS.length.toLocaleString()} vendors loaded</span>`;
+    `<span>${VENDORS.length.toLocaleString()} vendors loaded${_cacheAge ? ' &nbsp;·&nbsp; Data updated ' + _cacheAge : ''}</span>`;
 
   // Apply pending trade from URL param
   if (window._pendingTrade) {
@@ -1659,7 +1666,13 @@ showDataLoading();
 fetch(APPS_SCRIPT_URL)
   .then(r => r.json())
   .then(data => {
-    VENDORS = data;
+    // Support both old array format and new {vendors, cachedAt} format
+    if (Array.isArray(data)) {
+      VENDORS = data;
+    } else {
+      VENDORS = data.vendors || [];
+      if (data.cachedAt) window._cacheTimestamp = data.cachedAt;
+    }
     initApp();
   })
   .catch(err => {
