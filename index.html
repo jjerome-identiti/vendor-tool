@@ -905,10 +905,10 @@ function rankScore(v) {
     const hasTodayLoc  = v._saLocationMatch && v._saMatches.some(s=>s._sameDay&&(s._saDist<=0.15||(s._saDist<=0.75&&addrLocationMatch(workOrder&&workOrder._addr||'',s.addr))));
     const hasTodayArea = !hasTodayLoc && v._saMatches.some(s=>s._sameDay);
     const hasFutureLoc = !hasTodayLoc && v._saLocationMatch;
-    if (hasTodayLoc)  return -4000;
-    if (hasTodayArea) return -1200;
-    if (hasFutureLoc) return -2000;
-    return -400;
+    if (hasTodayLoc)  return -7000;
+    if (hasTodayArea) return -3000;
+    if (hasFutureLoc) return -4000;
+    return -1500;
   })();
   return smBonus + statusScore + distScore + alertScore + saBonus;
 }
