@@ -1526,7 +1526,9 @@ function initApp() {
 
   if (_urlEta) {
     const etaInput = document.getElementById('eta-date-input');
-    if (etaInput) { etaInput.value = _urlEta; state.etaDate = _urlEta; }
+    const _todayStr = (function(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+    const _etaFinal = _urlEta < _todayStr ? _todayStr : _urlEta;
+    if (etaInput) { etaInput.value = _etaFinal; state.etaDate = _etaFinal; }
   }
   if (_urlTrade) {
     // Normalize incoming trade value to match tool's trade names
