@@ -738,12 +738,13 @@ function clearVendorMarkers() { vendorMarkers.forEach(m=>map.removeLayer(m)); ve
 
 function vendorIcon(v, rank) {
   if (v._saLocationMatch) {
-    const starPts = '25,3 30.29,17.72 45.92,18.2 33.56,27.78 37.93,42.8 25,34 12.07,42.8 16.44,27.78 4.08,18.2 19.71,17.72';
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="36" height="36">
-      <polygon points="${starPts}" fill="#d97706" stroke="#fde047" stroke-width="2"/>
-      <text x="25" y="30" text-anchor="middle" font-size="14" font-weight="900" fill="white" font-family="Arial,sans-serif" stroke="#92400e" stroke-width="0.5">${rank??'·'}</text>
+    const starPts = '25,1 31.2,16.5 47.8,15.4 36,26.3 39,44.2 25,35.2 11,44.2 14,26.3 2.2,15.4 18.8,16.5';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="38" height="38">
+      <circle cx="25" cy="25" r="23" fill="white" stroke="#d97706" stroke-width="2.5"/>
+      <polygon points="${starPts}" fill="#d97706"/>
+      <text x="25" y="30" text-anchor="middle" font-size="15" font-weight="900" fill="white" font-family="Arial,sans-serif">${rank??'·'}</text>
     </svg>`;
-    return L.divIcon({ className:'', html:svg, iconSize:[36,36], iconAnchor:[18,18], popupAnchor:[0,-18] });
+    return L.divIcon({ className:'', html:svg, iconSize:[38,38], iconAnchor:[19,19], popupAnchor:[0,-19] });
   }
   let cls='';
   if (v.sm) cls='sm';
