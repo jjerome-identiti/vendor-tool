@@ -19,7 +19,7 @@
     --accent: #3b82f6;
     --accent-2: #60a5fa;
     --ok: #22c55e;
-    --warn: #f59e0b;
+    --warn: #FFCC00;
     --bad: #ef4444;
     --bg: #0a0e1a;
     --bg-2: #131927;
@@ -39,7 +39,7 @@
     --accent: #2563eb;
     --accent-2: #3b82f6;
     --ok: #16a34a;
-    --warn: #d97706;
+    --warn: #997A00;
     --bad: #dc2626;
     --bg: #f1f5f9;
     --bg-2: #ffffff;
@@ -73,7 +73,7 @@
   /* ── Light mode: pills ── */
   body.light-mode .pill-ok     { background:#dcfce7; color:#15803d; border-color:#86efac; }
   body.light-mode .pill-bad    { background:#fee2e2; color:#b91c1c; border-color:#fca5a5; }
-  body.light-mode .pill-warn   { background:#fef3c7; color:#92400e; border-color:#fcd34d; }
+  body.light-mode .pill-warn   { background:#fffbe6; color:#7a5c00; border-color:#FFCC00; }
   body.light-mode .pill-muted  { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
   body.light-mode .pill-info   { background:#dbeafe; color:#1d4ed8; border-color:#93c5fd; }
   body.light-mode .pill-green  { background:#dcfce7; color:#15803d; border-color:#86efac; }
@@ -83,7 +83,7 @@
 
   /* ── Light mode: alerts ── */
   body.light-mode .alert-severe  { background:#fee2e2; border-left-color:#dc2626; color:#7f1d1d; }
-  body.light-mode .alert-caution { background:#fef3c7; border-left-color:#d97706; color:#78350f; }
+  body.light-mode .alert-caution { background:#fffbe6; border-left-color:#997A00; color:#5c4400; }
   body.light-mode .alert-info { background:#f1f5f9; border-left-color:#64748b; color:#334155; }
   body.light-mode .pill-neutral { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
   body.light-mode .pill-purple { background:#ede9fe; color:#6d28d9; border-color:#c4b5fd; }
@@ -170,7 +170,7 @@
   .pill { display:inline-flex; align-items:center; gap:3px; padding:1px 6px; border-radius:999px; font-size:9px; font-weight:600; }
   .pill-ok { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
   .pill-bad { background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.3); }
-  .pill-warn { background:rgba(245,158,11,.15); color:#fbbf24; border:1px solid rgba(245,158,11,.3); }
+  .pill-warn { background:rgba(255,204,0,.12); color:#FFCC00; border:1px solid rgba(255,204,0,.35); }
   .pill-muted { background:rgba(148,163,184,.12); color:#cbd5e1; border:1px solid rgba(148,163,184,.2); }
   .pill-info { background:rgba(59,130,246,.15); color:#93c5fd; border:1px solid rgba(59,130,246,.3); }
   .pill-green { background:rgba(22,163,74,.2); color:#4ade80; border:1px solid rgba(22,163,74,.4); }
@@ -185,9 +185,15 @@
   .card-title-bar { border-radius:8px 8px 0 0; padding:5px 8px; display:flex; align-items:center; gap:6px; }
   .card-title-bar.normal { background:rgba(30,35,51,0.6); }
   .card-title-bar.self-managed-bar { background:linear-gradient(90deg,rgba(20,83,45,.85),rgba(22,101,52,.6)); border-bottom:1px solid rgba(22,163,74,.3); }
+  .card-title-bar.sa-loc-bar { background:linear-gradient(90deg,rgba(120,80,0,.85),rgba(161,122,8,.6)); border-bottom:1px solid rgba(234,179,8,.4); }
+  body.light-mode .card-title-bar.sa-loc-bar { background:linear-gradient(90deg,rgba(254,243,199,.9),rgba(253,230,138,.6)); border-bottom-color:rgba(202,138,4,.4); }
+  body.light-mode .card-title-bar.sa-loc-bar > div:last-child { color:#92400e !important; }
+  .rank-badge.sa-loc { background:linear-gradient(135deg,#d97706,#92400e); box-shadow:0 0 10px rgba(217,119,6,.5); }
+  .custom-marker.sa-loc { border-color:#f59e0b; color:#fde047; background:#1c1812; }
+  .custom-marker.sa-loc::after { content:'⭐'; position:absolute; top:-10px; right:-8px; font-size:10px; }
   .card-body { padding:5px 8px 7px; }
   .alert-severe { background:rgba(239,68,68,.1); border-left:3px solid #ef4444; color:#fecaca; }
-  .alert-caution { background:rgba(245,158,11,.1); border-left:3px solid #f59e0b; color:#fde68a; }
+  .alert-caution { background:rgba(255,204,0,.08); border-left:3px solid #FFCC00; color:#FFCC00; }
   .alert-info { background:rgba(148,163,184,.1); border-left:3px solid #64748b; color:#cbd5e1; }
   .pill-neutral { background:rgba(148,163,184,.12); color:#cbd5e1; border:1px solid rgba(148,163,184,.2); }
   .pill-purple { background:rgba(139,92,246,.15); color:#c4b5fd; border:1px solid rgba(139,92,246,.3); }
@@ -206,11 +212,23 @@
   .leaflet-control-attribution a { color:#93c5fd!important; }
   .leaflet-bar a { background:var(--bg-2)!important; color:var(--ink)!important; border-bottom-color:var(--line)!important; }
   .leaflet-bar a:hover { background:var(--bg-3)!important; }
-  .custom-marker { background:var(--bg-2); border:2px solid #3b82f6; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#93c5fd; font-size:11px; box-shadow:0 2px 8px rgba(0,0,0,.5); }
+  .custom-marker { position:relative; background:var(--bg-2); border:2px solid #3b82f6; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#93c5fd; font-size:11px; box-shadow:0 2px 8px rgba(0,0,0,.5); }
   .custom-marker.sm { border-color:#16a34a; color:#4ade80; background:#0c1a0f; }
   .custom-marker.severe { border-color:#ef4444; color:#fca5a5; background:#1c1014; }
-  .custom-marker.caution { border-color:#f59e0b; color:#fcd34d; background:#1c1812; }
+  .custom-marker.caution { border-color:#FFCC00; color:#FFCC00; background:#1c1812; }
   .custom-marker.target { background:#ef4444; border-color:white; color:white; width:34px; height:34px; font-size:16px; box-shadow:0 0 18px rgba(239,68,68,.6); }
+  /* SA match styles */
+  .sa-badge-loc  { background:rgba(234,179,8,.2);  color:#fde047; border:1px solid rgba(234,179,8,.4); }
+  .sa-badge-area { background:rgba(20,184,166,.15); color:#2dd4bf; border:1px solid rgba(20,184,166,.3); }
+  body.light-mode .sa-badge-loc  { background:#fefce8; color:#854d0e; border-color:#fde68a; }
+  body.light-mode .sa-badge-area { background:#f0fdfa; color:#0f766e; border-color:#99f6e4; }
+  .sa-section { margin-top:4px; border-top:1px solid var(--line); padding-top:4px; }
+  .sa-row { display:flex; flex-direction:column; gap:1px; padding:3px 6px; border-radius:4px; font-size:9.5px; background:rgba(22,163,74,.08); border-left:2px solid #16a34a; margin-bottom:3px; }
+  .sa-row.loc { background:rgba(22,163,74,.12); border-left-color:#22c55e; }
+  .sa-row a { color:#4ade80; text-decoration:underline; }
+  .sa-row.loc a { color:#4ade80; }
+  body.light-mode .sa-row a { color:#15803d; }
+  body.light-mode .sa-row.loc a { color:#15803d; }
   .vns-match-item { padding:6px 10px; cursor:pointer; font-size:11.5px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:1px; }
   .vns-match-item:hover, .vns-match-item.vns-active { background:var(--bg-3); }
   .vns-match-name { color:var(--ink-strong); font-weight:600; }
@@ -304,6 +322,12 @@
       </div>
     </div>
 
+    <!-- ETA Date (middle) -->
+    <div class="card" style="padding:8px 12px; flex:1; min-width:0;">
+      <label class="block text-xs font-semibold mb-1" style="color:var(--muted);">On-Time ETA Date</label>
+      <input id="eta-date-input" type="date" style="border:1px solid var(--line-2); border-radius:8px; padding:6px 10px; font-size:13px; background:var(--bg-3); color:var(--ink); width:100%; box-sizing:border-box;">
+    </div>
+
     <!-- Vendor Name Search -->
     <div class="card" style="padding:8px 12px; flex:1; min-width:0; position:relative;">
       <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
@@ -317,7 +341,7 @@
       </div>
     </div>
 
-  </div>
+  </div><!-- end search-row -->
 
   <!-- Filters toolbar -->
   <div class="card" style="padding:6px 10px; margin-bottom:8px;">
@@ -385,6 +409,29 @@
           <option value="all" selected>All</option>
           <option value="90">Active last 90d</option>
           <option value="ever">Has any WOs</option>
+        </select>
+      </label>
+
+      <!-- SA filter -->
+      <label style="display:flex; align-items:center; gap:5px; font-size:10.5px;">
+        <span style="font-weight:600; color:var(--muted);">SA Match:</span>
+        <select id="sa-filter" style="border:1px solid var(--line-2); border-radius:5px; padding:3px 7px; font-size:11px; background:var(--bg-3);">
+          <option value="all" selected>All</option>
+          <option value="any">Has SA Match</option>
+          <option value="loc">Location Match</option>
+        </select>
+      </label>
+
+      <!-- SA Distance -->
+      <label style="display:flex; align-items:center; gap:5px; font-size:10.5px;">
+        <span style="font-weight:600; color:var(--muted);">SA Radius:</span>
+        <select id="sa-radius-filter" style="border:1px solid var(--line-2); border-radius:5px; padding:3px 7px; font-size:11px; background:var(--bg-3);">
+          <option value="5">5 mi</option>
+          <option value="10">10 mi</option>
+          <option value="25" selected>25 mi</option>
+          <option value="50">50 mi</option>
+          <option value="100">100 mi</option>
+          <option value="9999">Any</option>
         </select>
       </label>
 
@@ -458,9 +505,9 @@
 <script>
 // ---------- Data ----------
 // ─── Live data config ────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjC2sipPu0-79cOTbjFSA6IJtRViNATWXJuJ7x99LbGO5iU4t9AmWcTPtC4GtIHGA/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMEo3Mm_Nr00u999cI_UpiEXn-2sZxwHsP-UyaM9C2A2E3xBu6UKBFG_-Eaud5PxFl/exec';
 let VENDORS = [];
-
+// ─── Password gate ────────────────────────────────────────
 // ─── Password gate ────────────────────────────────────────────────────────
 const TOOL_PASSWORD = 'V3nd3rKFM247'; // ← change this to update the password
 
@@ -665,6 +712,14 @@ let workOrderMarker=null, vendorMarkers=[], vendorMarkerMap={};
 function clearVendorMarkers() { vendorMarkers.forEach(m=>map.removeLayer(m)); vendorMarkers=[]; }
 
 function vendorIcon(v, rank) {
+  if (v._saLocationMatch) {
+    const starPts = '25,3 30.29,17.72 45.92,18.2 33.56,27.78 37.93,42.8 25,34 12.07,42.8 16.44,27.78 4.08,18.2 19.71,17.72';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="36" height="36">
+      <polygon points="${starPts}" fill="#d97706" stroke="#fde047" stroke-width="2"/>
+      <text x="25" y="30" text-anchor="middle" font-size="14" font-weight="900" fill="white" font-family="Arial,sans-serif" stroke="#92400e" stroke-width="0.5">${rank??'·'}</text>
+    </svg>`;
+    return L.divIcon({ className:'', html:svg, iconSize:[36,36], iconAnchor:[18,18], popupAnchor:[0,-18] });
+  }
   let cls='';
   if (v.sm) cls='sm';
   else if (v.al.some(a=>a.s===1)) cls='severe';
@@ -765,7 +820,7 @@ async function doAutocomplete(q) {
   acList.classList.remove('hidden');
 }
 function selectAddress(item) {
-  workOrder={lat:parseFloat(item.lat),lng:parseFloat(item.lon),label:item.display_name};
+  workOrder={lat:parseFloat(item.lat),lng:parseFloat(item.lon),label:item.display_name,_addr:item.display_name};
   addrInput.value=item.display_name;
   acList.classList.add('hidden');
   // Show pinned address bar below map
@@ -782,6 +837,27 @@ document.addEventListener('click',e=>{
 });
 
 // ---------- Distance ----------
+// ── SA address fuzzy match ────────────────────────────────────────────────────
+function normAddr(s) {
+  return String(s||'').toLowerCase()
+    .replace(/(street|st|avenue|ave|boulevard|blvd|road|rd|drive|dr|lane|ln|way|wy|court|ct|circle|cir)/g, '')
+    .replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
+}
+function addrLocationMatch(searchedAddr, saAddr) {
+  if (!searchedAddr || !saAddr) return false;
+  const a = normAddr(searchedAddr);
+  const b = normAddr(saAddr);
+  if (!a || !b) return false;
+  // Match if they share the same leading street number + first word of street name
+  const aTokens = a.split(' ');
+  const bTokens = b.split(' ');
+  if (aTokens[0] === bTokens[0] && aTokens[1] && bTokens[1] && aTokens[1] === bTokens[1]) return true;
+  // Or if one contains the other (short addresses)
+  if (a.length > 6 && b.includes(a.slice(0,Math.min(a.length,12)))) return true;
+  if (b.length > 6 && a.includes(b.slice(0,Math.min(b.length,12)))) return true;
+  return false;
+}
+
 function haversineMiles(lat1,lng1,lat2,lng2) {
   const R=3958.8, toRad=d=>d*Math.PI/180;
   const dLat=toRad(lat2-lat1), dLng=toRad(lng2-lng1);
@@ -804,11 +880,12 @@ function rankScore(v) {
   const severeCount = v.al.filter(a=>a.s===1).length;
   const cautionCount = v.al.filter(a=>a.s===2).length;
   const alertScore = severeCount > 0 ? 0.2 : cautionCount > 0 ? 0.1 : 0;
-  return smBonus + statusScore + distScore + alertScore;
+  const saBonus = v._saLocationMatch ? -2000 : (v._saMatches && v._saMatches.length > 0 ? -400 : 0);
+  return smBonus + statusScore + distScore + alertScore + saBonus;
 }
 
 // ---------- State ----------
-const state = { radius:50, trades:[], statuses:[], alerts:[], activity:'all', sort:'score', newVendor:'all', vendorSearch:'' };
+const state = { radius:50, trades:[], statuses:[], alerts:[], activity:'all', sort:'score', newVendor:'all', vendorSearch:'', etaDate:'', saFilter:'all', saRadius:25 };
 let currentResults=[], showCount=25;
 const NOW=new Date(), NINETY_AGO=new Date(NOW.getTime()-90*24*60*60*1000);
 
@@ -821,6 +898,17 @@ document.getElementById('radius-filter').addEventListener('change',e=>{ state.ra
 document.getElementById('activity-filter').addEventListener('change',e=>{ state.activity=e.target.value; applyFilters(); });
 document.getElementById('sort-by').addEventListener('change',e=>{ state.sort=e.target.value; applyFilters(); });
 document.getElementById('new-vendor-filter').addEventListener('change',e=>{ state.newVendor=e.target.value; applyFilters(); });
+document.getElementById('sa-filter').addEventListener('change',e=>{ state.saFilter=e.target.value; applyFilters(); });
+document.getElementById('sa-radius-filter').addEventListener('change',e=>{ state.saRadius=parseFloat(e.target.value); applyFilters(); });
+// ETA date — default to today
+(function(){
+  const etaInput = document.getElementById('eta-date-input');
+  const _d=new Date(); const today=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
+  etaInput.value = today;
+  state.etaDate = today;
+  etaInput.addEventListener('change', e => { state.etaDate = e.target.value || today; applyFilters(); });
+  etaInput.addEventListener('click', () => { try { etaInput.showPicker(); } catch(e) {} });
+})();
 
 document.getElementById('reset-filters').addEventListener('click',()=>{
   state.radius=50; state.trades=[]; state.statuses=[]; state.alerts=[]; state.activity='all'; state.newVendor='all'; state.sort='score';
@@ -953,6 +1041,34 @@ function applyFilters() {
   });
   if (state.radius<9999) pool=pool.filter(v=>v._dist<=state.radius);
 
+  // SA matching — attach _saMatches and _saLocationMatch to each vendor
+  const etaD = state.etaDate || new Date().toISOString().slice(0,10);
+  pool = pool.map(v => {
+    if (!v.sa || !v.sa.length) return v;
+    const matches = v.sa.filter(s => {
+      if (s.sd > etaD) return false;
+      if (!workOrder) return false;
+      const d = haversineMiles(workOrder.lat, workOrder.lng, s.lat, s.lng);
+      if (d > state.saRadius) return false;
+      // Trade filter: if trades filter active, SA trade must match
+      if (state.trades.length && !state.trades.includes(s.tr)) return false;
+      s._saDist = d;
+      return true;
+    });
+    if (!matches.length) return v;
+    const locMatch = matches.filter(s => {
+      if (s._saDist <= 0.15) return true;
+      // Fallback: slightly further but address text matches
+      if (s._saDist <= 0.75 && workOrder._addr && addrLocationMatch(workOrder._addr, s.addr)) return true;
+      return false;
+    });
+    return { ...v, _saMatches: matches, _saLocationMatch: locMatch.length > 0, _saLocMatches: locMatch };
+  });
+
+  // SA filter
+  if (state.saFilter === 'any') pool = pool.filter(v => v._saMatches && v._saMatches.length > 0);
+  else if (state.saFilter === 'loc') pool = pool.filter(v => v._saLocationMatch);
+
   // Sort
   if (state.sort==='score') {
     pool.sort((a,b)=>rankScore(a)-rankScore(b));
@@ -1005,14 +1121,14 @@ function renderCard(v, rank) {
   const isSM=v.sm===1||v.sm===true;
   const sfLink=v.id?`https://identiti.lightning.force.com/lightning/r/Account/${v.id}/view?ws=%2Flightning%2Fr%2FReport%2F00OPD00000DVoyj2AD%2Fview`:'';
 
-  const titleBarClass=isSM?'self-managed-bar':'normal';
-  const rankBadgeClass=isSM?'rank-badge sm':'rank-badge';
+  const titleBarClass=v._saLocationMatch?'self-managed-bar':isSM?'self-managed-bar':'normal';
+  const rankBadgeClass=v._saLocationMatch?'rank-badge sm':isSM?'rank-badge sm':'rank-badge';
 
   const vid = v.id || v.n;
   return `<div class="card${isSM?' self-managed':''}" data-vid="${vid}" style="font-size:12px;">
     <!-- Title bar -->
     <div class="card-title-bar ${titleBarClass}">
-      ${rank!=null?`<div class="${rankBadgeClass}" style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">${rank}</div>`:''}
+      ${rank!=null?`<div class="${rankBadgeClass}" style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">${rank}</div>${v._saLocationMatch?'<span style="font-size:13px;line-height:1;margin-left:-2px;" title="SA Location Match">⭐</span>':''}`:'' }
       <div style="font-weight:700;font-size:15px;color:${isSM?'#4ade80':'var(--ink-strong)'};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(v.n)}</div>
     </div>
     <!-- Body -->
@@ -1020,6 +1136,7 @@ function renderCard(v, rank) {
       ${isSM?'<span class="pill pill-green" style="font-size:8.5px;flex-shrink:0;align-self:flex-start;">⭐ Self-Managed</span>':''}
       ${(()=>{if(!v.vc)return '';const d=new Date(v.vc),now=new Date();return (now-d)/(864e5)<=180?'<span class="pill pill-info" style="font-size:8.5px;flex-shrink:0;align-self:flex-start;">🆕 New Vendor</span>':'';})()} 
       ${v.locs&&v.locs.length?'<span class="pill pill-purple" style="font-size:8.5px;flex-shrink:0;align-self:flex-start;">📍 Multiple Territories</span>':''}
+      ${v._saLocationMatch?'<span class="pill sa-badge-loc" style="font-size:8.5px;flex-shrink:0;align-self:flex-start;">⭐ SA Location Match</span>':v._saMatches&&v._saMatches.length?'<span class="pill sa-badge-area" style="font-size:8.5px;flex-shrink:0;align-self:flex-start;">📅 Upcoming SA Nearby</span>':''}
       <div style="color:var(--muted);"><span style="font-weight:600;color:var(--ink-2);">Trades:</span> ${escapeHtml(tradeStr)}</div>
       <div style="color:var(--muted);"><span style="font-weight:600;color:var(--ink-2);">Distance to Store:</span> <span style="color:var(--ink-strong);font-weight:600;">${dist}</span></div>
       <div style="display:flex;flex-wrap:wrap;gap:3px;align-items:center;">
@@ -1031,6 +1148,19 @@ function renderCard(v, rank) {
         ${!v.al.length?'<span class="pill pill-muted">No Alerts</span>':''}
       </div>
       ${sortedAlerts.length?`<div style="display:flex;flex-direction:column;gap:2px;">${sortedAlerts.map(a=>`<div class="${a.s===1?'alert-severe':a.s===2?'alert-caution':'alert-info'}" style="padding:2px 6px;border-radius:4px;font-size:9.5px;line-height:1.3;"><span style="font-weight:700;font-size:8.5px;text-transform:uppercase;">${a.s===1?'Severe':a.s===2?'Caution':'Info'}:</span> ${escapeHtml(a.t)}</div>`).join('')}</div>`:''}</div>
+      ${(v._saMatches&&v._saMatches.length)?`<div class="sa-section">
+        <div style="font-weight:700;font-size:9px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;">${v._saLocationMatch?'⭐ Service Appointments — Same Location':'📅 Service Appointments — Will Be Nearby'}</div>
+        ${v._saMatches.map(s=>`<div class="sa-row${s._saDist<=0.15?' loc':''}">
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <span style="font-weight:700;">WO# <a href="https://identiti.lightning.force.com/lightning/r/WorkOrder/${s.wid}/view" target="_blank" rel="noopener">${escapeHtml(s.wn)}</a></span>
+            <span style="color:var(--muted);">${s.an}</span>
+            <span style="color:var(--muted);">${s.sd}</span>
+            ${s._saDist<=0.15?'<span style="color:#fbbf24;font-weight:700;font-size:8.5px;">📍 Same Location</span>':''}
+          </div>
+          <div style="color:var(--ink-2);font-size:9.5px;font-weight:600;">${escapeHtml(s.store)}</div>
+          <div style="color:var(--muted);font-size:9px;">${escapeHtml(s.tr)} · ${s._saDist.toFixed(1)} mi away</div>
+        </div>`).join('')}
+      </div>`:''}
       <div style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
         <span style="font-weight:600;color:var(--ink-2);">Work Orders in Last 90 Days:</span> <span style="color:var(--ink-strong);">${m.wo90}</span>
         &nbsp;·&nbsp;<span style="font-weight:600;color:var(--ink-2);">Latest Work:</span> <span style="color:var(--ink-strong);">${fmtDate(m.latestDate)}</span>
@@ -1302,9 +1432,8 @@ fetch(APPS_SCRIPT_URL)
   .catch(err => {
     document.getElementById('vendor-list').innerHTML = `<div class="card" style="padding:24px;text-align:center;color:var(--muted);grid-column:1/-1;">
       <div style="font-weight:600;color:#f87171;margin-bottom:4px;">⚠ Failed to load vendor data</div>
-      <div style="font-size:11px;">Check your internet connection and try refreshing the page.<br>Error: ${err.message}</div>
+      <div style="font-size:11px;">Check your internet connection and try refreshing.<br>Error: ${err.message}</div>
     </div>`;
-    console.error('Vendor data fetch error:', err);
   });
 
 // ── Mobile: dynamic header height padding ────────────────────────────────────────
