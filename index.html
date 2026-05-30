@@ -1581,7 +1581,7 @@ function initApp() {
   const _parseSFNum = v => parseFloat((v||'').trim().replace(',','.'));
   const _urlLat = _parseSFNum(_urlParams.get('lat'));
   const _urlLng = _parseSFNum(_urlParams.get('lng'));
-  const _urlLabel = _urlParams.get('label') || _urlAddress || '';
+  const _urlLabel = _urlParams.get('label') || _urlAddress || _urlParams.get('address') || '';
 
   if (!isNaN(_urlLat) && !isNaN(_urlLng) && (_urlLat !== 0 || _urlLng !== 0)) {
     // Lat/lng provided directly — skip geocoding entirely
