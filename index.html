@@ -707,7 +707,7 @@ const TILE_PROVIDERS_LIGHT = [
   { name:'Carto Voyager', url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19 },
   { name:'OpenStreetMap', url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution:'&copy; OpenStreetMap', maxZoom:19 },
 ];
-let TILE_PROVIDERS = TILE_PROVIDERS_DARK;
+let TILE_PROVIDERS = TILE_PROVIDERS_LIGHT;
 let activeTileLayer = null;
 const mapDiag = document.createElement('div');
 mapDiag.style.cssText = 'position:absolute;bottom:6px;left:6px;z-index:1000;background:rgba(10,14,26,.85);color:#cbd5e1;padding:3px 7px;border-radius:5px;font-size:10px;pointer-events:none;';
@@ -1755,9 +1755,7 @@ function applyTheme(dark) {
   document.body.classList.toggle('light-mode', !dark);
   themeBtn.textContent = dark ? '☀ Light Mode' : '🌙 Dark Mode';
   localStorage.setItem('theme', dark ? 'dark' : 'light');
-  // Swap map tiles to match theme
-  TILE_PROVIDERS = dark ? TILE_PROVIDERS_DARK : TILE_PROVIDERS_LIGHT;
-  tryTile(0);
+  // Map always uses light tiles
 }
 
 themeBtn.addEventListener('click', () => applyTheme(!isDark));
