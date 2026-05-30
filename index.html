@@ -1554,13 +1554,24 @@ function initApp() {
     const normalizedTrade = TRADE_URL_NORM[_urlTrade.toLowerCase().trim()] || _urlTrade;
     window._pendingTrade = normalizedTrade;
   }
+  // Clean Salesforce address artifacts before geocoding
+  function cleanSFAddress(addr) {
+    return addr
+      .replace(/\s+#\s+[A-Z]+\b/g, '')   // remove # ROADUNIT, # SUITE, # APT etc.
+      .replace(/\s*\bUS\b\s*$/i, '')      // remove trailing country code
+      .replace(/\s*\bUNITED STATES\b\s*$/i, '')
+      .replace(/\s{2,}/g, ' ')              // collapse multiple spaces
+      .trim();
+  }
+
   if (_urlAddress) {
     const addrInput = document.getElementById('address-input');
     if (addrInput) {
-      addrInput.value = _urlAddress;
+      const _cleanedAddr = cleanSFAddress(_urlAddress);
+      addrInput.value = _cleanedAddr;
       // Trigger geocode after a short delay so the app is fully ready
       setTimeout(async () => {
-        const res = await geocodeAny(_urlAddress);
+        const res = await geocodeAny(_cleanedAddr);
         if (res.length) {
           selectAddress(res[0]);
         } else {
