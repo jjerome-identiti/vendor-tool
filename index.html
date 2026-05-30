@@ -167,7 +167,8 @@
     .ms-item { padding:8px 10px; }
     .autocomplete-list { max-height:180px; }
     /* Date input fits on screen */
-    #eta-date-input { width:100% !important; box-sizing:border-box !important; font-size:14px !important; padding:5px 8px !important; }
+    #eta-date-input { width:100% !important; max-width:100% !important; box-sizing:border-box !important; font-size:14px !important; padding:5px 6px !important; min-width:0 !important; -webkit-appearance:none; appearance:none; }
+    #search-row > div:nth-child(2) { min-width:0 !important; overflow:hidden !important; }
   }
   .pill { display:inline-flex; align-items:center; gap:3px; padding:1px 6px; border-radius:999px; font-size:9px; font-weight:600; }
   .pill-ok { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
