@@ -1668,7 +1668,7 @@ function initApp() {
   allTrades.forEach(t => {
     const d = document.createElement('div');
     d.className = 'ms-item';
-    d.innerHTML = `<input type="checkbox" value="${t}"/><span>${t}</span>`;
+    d.innerHTML = `<input type="checkbox" value="${t}"/><span>${displayTrade(t)}</span>`;
     tdd.appendChild(d);
   });
   if (existingClear) tdd.appendChild(existingClear);
