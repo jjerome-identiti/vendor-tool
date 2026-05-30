@@ -580,7 +580,7 @@ const tradeDropdown = document.getElementById('trade-dropdown');
 [...allTrades].sort().forEach(t => {
   const item = document.createElement('div');
   item.className = 'ms-item';
-  item.innerHTML = `<input type="checkbox" value="${escapeHtml(t)}" /><span>${escapeHtml(t)}</span>`;
+  item.innerHTML = `<input type="checkbox" value="${escapeHtml(t)}" /><span>${escapeHtml(displayTrade(t))}</span>`;
   tradeDropdown.appendChild(item);
 });
 const tradeClear = document.createElement('div');
@@ -863,6 +863,12 @@ document.addEventListener('click',e=>{
 
 // ---------- Distance ----------
 // ── SA address fuzzy match ────────────────────────────────────────────────────
+// Trade display name overrides
+function displayTrade(t) {
+  const DISPLAY = { 'Installer': 'Sign Installer' };
+  return DISPLAY[t] || t;
+}
+
 function normAddr(s) {
   return String(s||'').toLowerCase()
     .replace(/(street|st|avenue|ave|boulevard|blvd|road|rd|drive|dr|lane|ln|way|wy|court|ct|circle|cir)/g, '')
@@ -1187,7 +1193,7 @@ function docCompliancePill(twod) {
 function renderCard(v, rank) {
   const m=vendorMetrics(v);
   const dist=v._dist!=null?v._dist.toFixed(1)+' mi  '+estDriveTime(v._dist):'—';
-  const tradeStr=v.tr.length?v.tr.join(', '):'—';
+  const tradeStr=v.tr.length?v.tr.map(displayTrade).join(', '):'—';
   const sortedAlerts=v.al.slice().sort((a,b)=>a.s-b.s);
   const isSM=v.sm===1||v.sm===true;
   const sfLink=v.id?`https://identiti.lightning.force.com/lightning/r/Account/${v.id}/view?ws=%2Flightning%2Fr%2FReport%2F00OPD00000DVoyj2AD%2Fview`:'';
@@ -1237,7 +1243,7 @@ function renderCard(v, rank) {
             ${!s._tradeMatch?'<span style="color:#f87171;font-weight:700;font-size:8.5px;">⚠ Trade Mismatch</span>':''}
           </div>
           <div style="color:var(--ink-2);font-size:9.5px;font-weight:600;">${escapeHtml(s.store)}</div>
-          <div style="color:var(--muted);font-size:9px;">${escapeHtml(s.tr)}${s._saDist!=null?' · '+s._saDist.toFixed(1)+' mi  '+estDriveTime(s._saDist):''}</div>
+          <div style="color:var(--muted);font-size:9px;">${escapeHtml(displayTrade(s.tr))}${s._saDist!=null?' · '+s._saDist.toFixed(1)+' mi  '+estDriveTime(s._saDist):''}</div>
         </div>`).join('')}
       </div>`:''}
       <div style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
