@@ -878,6 +878,15 @@ function addrLocationMatch(searchedAddr, saAddr) {
   return false;
 }
 
+function estDriveTime(miles) {
+  if (!miles && miles !== 0) return '';
+  const mph = miles < 5 ? 25 : miles < 25 ? 40 : miles < 100 ? 55 : 65;
+  const mins = Math.round((miles / mph) * 60);
+  if (mins < 60) return `~${mins} min`;
+  const h = Math.floor(mins/60), m = mins % 60;
+  return m > 0 ? `~${h}h ${m}m` : `~${h}h`;
+}
+
 function haversineMiles(lat1,lng1,lat2,lng2) {
   const R=3958.8, toRad=d=>d*Math.PI/180;
   const dLat=toRad(lat2-lat1), dLng=toRad(lng2-lng1);
@@ -1147,7 +1156,7 @@ function docCompliancePill(twod) {
 
 function renderCard(v, rank) {
   const m=vendorMetrics(v);
-  const dist=v._dist!=null?v._dist.toFixed(1)+' mi':'—';
+  const dist=v._dist!=null?v._dist.toFixed(1)+' mi  '+estDriveTime(v._dist):'—';
   const tradeStr=v.tr.length?v.tr.join(', '):'—';
   const sortedAlerts=v.al.slice().sort((a,b)=>a.s-b.s);
   const isSM=v.sm===1||v.sm===true;
@@ -1198,7 +1207,7 @@ function renderCard(v, rank) {
             ${!s._tradeMatch?'<span style="color:#f87171;font-weight:700;font-size:8.5px;">⚠ Trade Mismatch</span>':''}
           </div>
           <div style="color:var(--ink-2);font-size:9.5px;font-weight:600;">${escapeHtml(s.store)}</div>
-          <div style="color:var(--muted);font-size:9px;">${escapeHtml(s.tr)} · ${s._saDist.toFixed(1)} mi away</div>
+          <div style="color:var(--muted);font-size:9px;">${escapeHtml(s.tr)} · ${s._saDist.toFixed(1)} mi  ${estDriveTime(s._saDist)}</div>
         </div>`).join('')}
       </div>`:''}
       <div style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -1252,7 +1261,7 @@ function render() {
         });
       });
       const nearestHtml = nearest
-        ? `<div class="gap-nearest">Nearest upcoming SA: <strong>${nearest.d.toFixed(1)} mi away</strong> on ${nearest.s.sd} — ${escapeHtml(nearest.v.n)} at ${escapeHtml(nearest.s.store)}</div>`
+        ? `<div class="gap-nearest">Nearest upcoming SA: <strong>${nearest.d.toFixed(1)} mi (${estDriveTime(nearest.d)})</strong> on ${nearest.s.sd} — ${escapeHtml(nearest.v.n)} at ${escapeHtml(nearest.s.store)}</div>`
         : `<div class="gap-nearest">No upcoming service appointments found within 30 days.</div>`;
       const banner = `<div class="sa-gap-banner"><div class="gap-title">📭 No vendors scheduled in this area within ${state.saRadius} mi before ${state.etaDate}</div>${nearestHtml}</div>`;
       listEl.innerHTML = banner + showing.map((v,i)=>renderCard(v,i+1)).join('');
@@ -1272,7 +1281,7 @@ function render() {
     const vid=v.id||v.n;
     const popupBase=`<b>${escapeHtml(v.n)}</b><br>${v.tr.join(', ')||'—'}`;
     const m=L.marker([v.lat,v.lng],{icon:vendorIcon(v,i+1),zIndexOffset:500-i})
-      .bindPopup(popupBase+(v._dist!=null?'<br>'+v._dist.toFixed(1)+' mi':'')+(v.locs&&v.locs.length?'<br><span style="font-size:10px;color:#94a3b8;">'+v.locs.length+' additional location(s)</span>':''));
+      .bindPopup(popupBase+(v._dist!=null?'<br>'+v._dist.toFixed(1)+' mi  '+estDriveTime(v._dist):'')+(v.locs&&v.locs.length?'<br><span style="font-size:10px;color:#94a3b8;">'+v.locs.length+' additional location(s)</span>':''));
     m.addTo(map); vendorMarkers.push(m);
     if(!vendorMarkerMap[vid]) vendorMarkerMap[vid]=[];
     vendorMarkerMap[vid].push(m);
