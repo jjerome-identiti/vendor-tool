@@ -702,7 +702,6 @@ document.addEventListener('click', () => {
 const map = L.map('map', { zoomControl:true }).setView([39.5,-98.35],4);
 const TILE_PROVIDERS_DARK = [
   { name:'ArcGIS Dark Gray', url:'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution:'Tiles &copy; Esri', maxZoom:16 },
-  { name:'Carto Dark Matter', url:'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19 },
 ];
 const TILE_PROVIDERS_LIGHT = [
   { name:'Carto Voyager', url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19 },
@@ -724,7 +723,11 @@ function tryTile(idx) {
   activeTileLayer = L.tileLayer(p.url, opts);
   let settled = false;
   const wd = setTimeout(() => { if (!settled) { settled=true; tryTile(idx+1); } }, 5000);
-  activeTileLayer.on('tileerror', () => { if (!settled) { settled=true; clearTimeout(wd); tryTile(idx+1); } });
+  let _tileErrors = 0;
+  activeTileLayer.on('tileerror', () => {
+    _tileErrors++;
+    if (!settled && _tileErrors >= 5) { settled=true; clearTimeout(wd); tryTile(idx+1); }
+  });
   activeTileLayer.on('tileload', () => { if (!settled) { settled=true; clearTimeout(wd); mapDiag.textContent=p.name+' ✓'; setTimeout(()=>{mapDiag.style.opacity='0';mapDiag.style.transition='opacity 1s';},1500); } });
   activeTileLayer.addTo(map);
 }
