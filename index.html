@@ -141,8 +141,8 @@
     .list-panel-scroll { overflow-y:visible !important; height:auto !important; flex:none !important; min-height:0 !important; }
     /* Map above list */
     #map-section { order:-1 !important; height:220px; flex-shrink:0 !important; }
-    #map-section #map { position:relative !important; height:100%; }
-    #layout-root.map-collapsed #map-section { display:none !important; flex:none !important; }
+    #map-section #map { position:relative !important; height:220px !important; width:100% !important; }
+    #layout-root.map-collapsed #map-section { visibility:hidden !important; height:0 !important; overflow:hidden !important; flex:none !important; margin:0 !important; padding:0 !important; }
     #load-more-wrap { padding:6px 8px 24px; }
 
     /* ── Compact banner: logo + centered title on row 1, button left on row 2 ── */
@@ -1235,6 +1235,7 @@ function render() {
       }
     }
   }
+  if (window.innerWidth <= 640) { setTimeout(() => map.invalidateSize(), 200); }
   if (vendorMarkers.length>0) {
     if (state.vendorSearch && !workOrder) {
       // Name search with no address: fit to matched vendors only
@@ -1468,7 +1469,8 @@ function applyMapVisibility() {
   layoutRootEl.classList.toggle('map-collapsed', !mapVisible);
   mapCollapseBtn.innerHTML = mapVisible ? '🗺 Hide Map' : '🗺 Show Map';
   mapCollapseBtn.title = mapVisible ? 'Click to collapse map' : 'Click to expand map';
-  setTimeout(() => map.invalidateSize(), 320);
+  // Multiple calls needed on Android to ensure map re-renders correctly
+  [100, 320, 600, 1000].forEach(d => setTimeout(() => map.invalidateSize(), d));
 }
 
 mapCollapseBtn.addEventListener('click', () => {
